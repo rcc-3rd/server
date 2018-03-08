@@ -1,0 +1,13 @@
+{
+  "thumbnailImageUrl": "",
+  "title": "",
+  "text": "",
+  "actions": [
+    {
+      "type": "postback",
+      "label": "話す",
+      "data": "",
+      "displayText": "と話す"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "type": "template", 
+  "altText": "近くに居るユーザです"
+  "template": {
+    "type": "carousel",
+    "columns": [],
+    "imageAspectRatio": "square",
+    "imageSize": "contain"
+  }
+}
