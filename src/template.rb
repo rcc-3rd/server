@@ -6,7 +6,7 @@ class Template
   include Singleton
 
   def initialize
-    Dir.glob("templates/*").each do |f|
+    Dir.glob("templates/*json").each do |f|
       json = nil
       File.open(f) do |io|
         json = JSON.load(io)

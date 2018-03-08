@@ -3,11 +3,11 @@
   "altText": "対話終了確認",
   "template": {
     "type": "confirm",
-    "text": "本当に終了しますか？"
+    "text": "本当に終了しますか？",
     "actions": [
       {
         "type": "postback",
-        "label": "はい"
+        "label": "はい",
         "data": "yes",
         "displayText": "はい"
       },

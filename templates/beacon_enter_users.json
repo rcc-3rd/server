@@ -1,6 +1,6 @@
 {
   "type": "template", 
-  "altText": "近くに居るユーザです"
+  "altText": "近くに居るユーザです",
   "template": {
     "type": "carousel",
     "columns": [],
