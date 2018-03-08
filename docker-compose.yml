@@ -29,6 +29,8 @@ services:
       - 3306
     networks:
       - bus_inner
+    environment:
+      MYSQL_ROOT_PASSWORD: password
 
 networks:
   bus_inner:

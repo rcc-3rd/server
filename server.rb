@@ -1,48 +1,48 @@
 require 'json'
 
-require 'sinatra'
+require 'sinatra/base'
 require 'sinatra/reloader' 
 
 require_relative 'src/requests'
-#require_relative 'src/db_util'
+require_relative 'src/db_util'
 
 
-set :port, 8080
-set :bind, "0.0.0.0"
 
+class Hoge < Sinatra::Base
+  set :port, 8080
+  set :bind, "0.0.0.0"
 
-get '/' do
-  "hoge"
-end
+  get '/' do
+    "hoge"
+  end
 
+  post '/submit' do
+    params = JSON.parse request.body.read
+    return Error.new("invalid json") unless params
 
-post '/submit' do
-  params = JSON.parse request.body.read
-  return Error.new("invalid json") unless params
+    name = params.dig("name")
+    profile = params.dig("profile")
 
-  name = params.dig("name")
-  profile = params.dig("profile")
+    req = validate_existance({"name":name, "profile":profile})
+    return req.to_json if req.class==Error
 
-  req = validate_existance({"name":name, "profile":profile})
-  return req.to_json if req.class==Error
+    # should validate
 
-  # should validate
+    safe_params = {"name": name, "profile": profile}
+    register_user(safe_params)
 
-  safe_params = {"name": name, "profile": profile}
-  register_user(safe_params)
-
-  return Success.new("submit done").to_json 
-end
+    return Success.new("submit done").to_json 
+  end
 
 
 # line beacon API
-post '/beacon' do
-  params = parse_json request.body.read
-  return Error.new("invalid json")
-  
-  return {"status": "hoge"}.to_json
+  post '/beacon' do
+    params = parse_json request.body.read
+    return Error.new("invalid json")
+    
+    return {"status": "hoge"}.to_json
+  end
 end
-
 
 def register_user(params)
 
@@ -60,6 +60,7 @@ def parse_json(text)
   params
 end
 
+
 # 存在検証
 # Error / nil
 def validate_existance(params)
@@ -72,4 +73,10 @@ def validate_existance(params)
   return nil
 end
 
+def setup()
+  # line bot
+  # db  
+end
 
+setup()
+Hoge.run!

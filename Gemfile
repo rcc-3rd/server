@@ -9,7 +9,8 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 gem "sinatra"
 gem 'sinatra-contrib'
 
-gem 'mysql'
+gem 'mysql2'
 gem 'activerecord'
 
+gem 'line-bot-api'
 
