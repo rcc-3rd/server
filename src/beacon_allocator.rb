@@ -2,7 +2,7 @@ require 'singleton'
 
 room_list = ["1","2","3","4","5"]
 
-class BeaconAcceptor
+class BeaconAllocator
   include Singleton
 
   def allocate_event (event) 
