@@ -29,7 +29,7 @@ class LineAllocator
     message["text"] += user_id
     puts message.to_json
 
-    res = $message_helper.push_message(user_id, message.to_json)
+    res = $message_helper.push_message(user_id, message)
 
   end
 

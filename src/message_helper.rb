@@ -20,7 +20,7 @@ class MessageHelper
 
     body = {
       "to": user_id,
-      "messages": message_hash
+      "messages": [message_hash]
     }
 
     res = conn.post do |req|

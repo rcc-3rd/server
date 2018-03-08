@@ -61,6 +61,7 @@ class Hoge < Sinatra::Base
     when "follow" then
       puts "follow fire"
       $line_allocator.send_register(event.dig("source", "userId"))
+
     when "beacon" then
       puts "beacon fire"
       res = $beacon_allocator.allocate_event(event)
