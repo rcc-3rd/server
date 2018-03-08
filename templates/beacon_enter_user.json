@@ -1,0 +1,20 @@
+{
+ "type": "template",
+ "altText": "近くに居るユーザ",
+ "template": {
+   "type": "buttons",
+   "thumbnailImageUrl": "",
+   "imageAspectRatio": "square",
+   "imageSize": "contain",
+   "title": "",
+   "text": "",
+   "actions": [
+     {
+       "type": "postback",
+       "label": "話す",
+       "data": "",
+       "displayText": "と話す"
+     }
+   ]
+ }
+}

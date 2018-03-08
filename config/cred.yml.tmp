@@ -1,0 +1,4 @@
+channel:
+  LINE_CHANNEL_TOKEN: <your line channel token>
+  LINE_CHANNEL_SECRET: <your channel secret>
+

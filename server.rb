@@ -40,8 +40,9 @@ class Hoge < Sinatra::Base
 
     safe_params = {"name": name, "profile": profile, "line_id": line_id}
     $line_allocator.register_user(safe_params)
-
-    return Success.new("submit done").to_json 
+    
+    #redirect 'https://line.me/R/', 302
+    redirect 'https://line.me/R/oaMessage/@jrs2532i', 307
   end
 
 
@@ -66,8 +67,29 @@ class Hoge < Sinatra::Base
 
     when "message" then
       puts "message fire"
-      res = $line_allocator.allocate_event(event)
+      puts params
+      res = $line_allocator.allocate_event(event["source"]["userId"], event)
+      
 
+
+    when "postback" then
+      puts "postback get"
+
+      params = parse_json event["postback"]["data"]
+      return Error.new("invalid json") unless params
+
+      puts params
+
+      case params["type"]
+      when "invite"
+        puts "get invite"
+        $line_allocator.send_invite event["source"]["userId"], params["user_id"]
+
+      when "matching"
+        puts "get matching"
+        $line_allocator.pairing(event["source"]["userId"], params["user_id"])
+      end
+      
     else
       res = Error.new("invalid type")
 
@@ -75,36 +97,6 @@ class Hoge < Sinatra::Base
 
 
     return res.to_json
-  end
-
-  # 「誘う」が押されてお誘いを送信
-  get 'invite' do
-    user_id = params["user_id"]
-    target_id = params["target_id"]
-    res = validate_existance({"user_id": user_id, "target_id": target_id})
-    return res.to_json if res
-
-    $line_allocator.send_invite(user_id, target_id)
-  end
-
-  # お誘いについて返答した時の処理
-  get '/matching' do
-    state = params["state"]
-    return Error.new("state require") unless state
-
-    case state
-    when "no" 
-      return Success.new("no")
-    when "yes"
-      user_id = params["user_id"]
-      return Error.new("user_id required") unless user_id
-
-      target_id = params["target_id"]
-      return Error.new("target_id required") unless target_id
-    
-      # 諸々に問題がなければペアリング
-      return $lineAllocator.pairing(user_id, target_id)
-    end
   end
 
 end

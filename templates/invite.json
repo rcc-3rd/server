@@ -1,0 +1,26 @@
+{
+ "type": "template",
+ "altText": "対話招待",
+ "template": {
+   "type": "buttons",
+   "thumbnailImageUrl": "",
+   "imageAspectRatio": "square",
+   "imageSize": "contain",
+   "title": "",
+   "text": "",
+   "actions": [
+     {
+       "type": "postback",
+       "label": "はい",
+       "data": "yes",
+       "displayText": "喋る"
+     },
+     {
+       "type": "postback",
+       "label": "いいえ",
+       "data": "no",
+       "displayText": "喋らない"
+     }
+   ]
+ }
+}
