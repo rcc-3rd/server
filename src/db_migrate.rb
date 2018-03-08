@@ -1,12 +1,12 @@
 require 'active_record'
-require 'mysql2'
+require 'pg'
 
 
 ActiveRecord::Base.establish_connection(
-  adapter: 'mysql2', 
-  host: 'mysql',
-  database: 'mysql',
-  username: 'root',
+  adapter: 'postgresql', 
+  host: 'postgres',
+  database: 'postgres',
+  username: 'postgres',
   password: 'password',
 )
 
@@ -29,4 +29,5 @@ end
 
 
 InitialSchema.migrate(:up)
+#InitialSchema.migrate(:down)
 

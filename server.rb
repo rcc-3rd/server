@@ -24,24 +24,22 @@ class Hoge < Sinatra::Base
   end
 
   get '/register' do
+    @line_id = params["line_id"]
     erb :register
   end
 
   post '/submit' do
-    params = parse_json request.body.read
-    return Error.new("invalid json") unless params
-
-    name = params.dig("name")
-    profile = params.dig("profile")
-    line_id = params.dig("line_id")
+    name = params["name"]
+    profile = params["profile"]
+    line_id = params["line_id"]
 
     req = validate_existance({"name":name, "profile":profile, "line_id": line_id})
     return req.to_json if req.class==Error
 
-    # should validate
+    puts params
 
     safe_params = {"name": name, "profile": profile, "line_id": line_id}
-    $line_client.register_user(safe_params)
+    $line_allocator.register_user(safe_params)
 
     return Success.new("submit done").to_json 
   end
@@ -86,7 +84,7 @@ class Hoge < Sinatra::Base
     res = validate_existance({"user_id": user_id, "target_id": target_id})
     return res.to_json if res
 
-    $line_client.send_invite(user_id, target_id)
+    $line_allocator.send_invite(user_id, target_id)
   end
 
   # お誘いについて返答した時の処理
@@ -129,7 +127,7 @@ end
 # Error / nil
 def validate_existance(params)
   params.each do |k, v|
-    continue if v
+    next if v
 
     return Error.new("#{k} required")
   end
