@@ -34,6 +34,10 @@ end
 class Error
   attr_reader :message
 
+  def initialize(message)
+    @message = message
+  end
+
   def to_json()
     hash = {
       "status": "error",

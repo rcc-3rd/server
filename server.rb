@@ -6,6 +6,8 @@ require 'sinatra/reloader'
 require_relative 'src/requests'
 require_relative 'src/db_util'
 
+require_relative 'src/beacon_allocator'
+require_relative 'src/line_allocator'
 
 
 class Hoge < Sinatra::Base
@@ -22,30 +24,51 @@ class Hoge < Sinatra::Base
 
     name = params.dig("name")
     profile = params.dig("profile")
+    line_id = params.dig("line_id")
 
-    req = validate_existance({"name":name, "profile":profile})
+    req = validate_existance({"name":name, "profile":profile, "line_id": line_id})
     return req.to_json if req.class==Error
 
     # should validate
 
-    safe_params = {"name": name, "profile": profile}
+    safe_params = {"name": name, "profile": profile, "line_id": line_id}
     register_user(safe_params)
 
     return Success.new("submit done").to_json 
   end
 
 
-# line beacon API
-  post '/beacon' do
-    params = parse_json request.body.read
-    return Error.new("invalid json")
+  # line beacon API
+  post '/line' do
+    params = JSON.parse request.body.read
+    return Error.new("invalid json") unless params
+    return Error.new("require event") unless event=params.dig("events")[0]
+
+    puts params
+
+    case event["type"]
+    when "beacon" then
+      res = $beacon_allocator.allocate_event(event)
+
+    when "message" then
+      res = $line_allocator.allocate_event(event)
+
+    else
+      res = Error.new("invalid type")
+
+    end
     
-    return {"status": "hoge"}.to_json
+    return res.to_json
   end
+
+
 end
 
+# validateしてから読んでねてへぺろ
 def register_user(params)
+  params["active"] = 1
 
+  user = User.create(params)
 end
 
 # parse Json text
@@ -75,8 +98,10 @@ end
 
 def setup()
   # line bot
-  # db  
+  # allocator
+  $line_allocator = LineAllocator.getInstance()
+  $beacon_allocator = BeaconAllocator.getInstance()
 end
 
-setup()
+#setup()
 Hoge.run!
