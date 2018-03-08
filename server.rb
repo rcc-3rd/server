@@ -1,4 +1,5 @@
 require 'json'
+require 'byebug'
 
 require 'sinatra/base'
 require 'sinatra/reloader' 
@@ -11,6 +12,7 @@ require_relative 'src/db_util'
 require_relative 'src/beacon_allocator'
 require_relative 'src/line_allocator'
 require_relative 'src/template'
+require_relative 'src/message_helper'
 
 
 class Hoge < Sinatra::Base
@@ -26,7 +28,7 @@ class Hoge < Sinatra::Base
   end
 
   post '/submit' do
-    params = JSON.parse request.body.read
+    params = parse_json request.body.read
     return Error.new("invalid json") unless params
 
     name = params.dig("name")
@@ -47,38 +49,31 @@ class Hoge < Sinatra::Base
 
   # line beacon API
   post '/line' do
-    body = request.body.read
+    req = request.body.read
 
-    signature = request.env['HTTP_X_LINE_SIGNATURE']
-    unless $line_client.validate_signature(body, signature)
-      error 400 do 'Bad Request' end
+    params = parse_json req
+    return Error.new("invalid json") unless params
+    return Error.new("require event") unless event=params.dig("events")[0]
+
+    puts event
+
+    case event["type"]
+    when "follow" then
+      puts "follow fire"
+      $line_allocator.send_register(event.dig("source", "userId"))
+    when "beacon" then
+      puts "beacon fire"
+      res = $beacon_allocator.allocate_event(event)
+
+    when "message" then
+      puts "message fire"
+      res = $line_allocator.allocate_event(event)
+
+    else
+      res = Error.new("invalid type")
+
     end
 
-    events = $line_client.parse_events_from(body)
-    events.each do |event|
-      case event
-      when Line::Bot::Event::Beacon
-        $beacon_allocator.allocate_event(event)
-
-      when Line::Bot::Event::Message
-=begin
-        case event.type
-        when Line::Bot::Event::MessageType::Text
-          message = {
-            type: 'text',
-            text: event.message['text']
-          }
-          $line_client.reply_message(event['replyToken'], message)
-        when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
-          response = client.get_message_content(event.message['id'])
-          tf = Tempfile.open("content")
-          tf.write(response.body)
-        end
-=end
-      when Line::Bot::Event::Follow
-        $line_allocator.send_register()
-      end
-    end
 
     return res.to_json
   end
@@ -118,6 +113,7 @@ end
 # parse Json text
 # text / nil
 def parse_json(text)
+  params = nil
   begin
     params = JSON.parse text
   rescue JSON::ParserError
@@ -153,6 +149,7 @@ def setup()
   $line_allocator = LineAllocator.instance
   $beacon_allocator = BeaconAllocator.instance
   $templates = Template.instance
+  $message_helper = MessageHelper.instance
 end
 
 setup()

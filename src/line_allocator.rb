@@ -27,8 +27,10 @@ class LineAllocator
   def send_register(user_id)
     message = $templates.first_register.clone
     message["text"] += user_id
+    puts message.to_json
 
-    $line_client.push_message(user_id, message.to_json)
+    res = $message_helper.push_message(user_id, message.to_json)
+
   end
 
 # validateしてから読んでねてへぺろ
@@ -42,7 +44,5 @@ class LineAllocator
     # matching用の招待を送信
 
   end
-
-
 
 end

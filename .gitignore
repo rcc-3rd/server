@@ -1,4 +1,6 @@
 Gemfile.lock
 config/cred.yml
 
+.byebug_history
+
 !.gitkeep
