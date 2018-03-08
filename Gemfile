@@ -12,5 +12,8 @@ gem 'sinatra-contrib'
 gem 'mysql2'
 gem 'activerecord'
 
+gem 'faraday'
+
 gem 'line-bot-api'
 
+gem 'byebug'
