@@ -13,13 +13,13 @@ ActiveRecord::Base.establish_connection(
 
 class InitialSchema < ActiveRecord::Migration[5.1]
   def self.up
-    create_table :users  do |t|
+    create_table :users do |t|
+      t.string :line_id
       t.string :name
       t.string :profile
       t.integer :active
-      t.string :line_id
     end
-
+    add_index :users, [:line_id], :unique => true
   end
 
   def self.down

@@ -4,12 +4,15 @@ require 'singleton'
 class LineAllocator
   include Singleton
 
+  attr_accessor :rooms
+
   #Redis使う
-  @@rooms = []
+  def initialize
+    @rooms = []
+  end
 
   def allocate_event (event) 
     # roomを
-    
     
     
   
@@ -30,14 +33,14 @@ class LineAllocator
     puts message.to_json
 
     res = $message_helper.push_message(user_id, message)
-
   end
 
-# validateしてから読んでねてへぺろ
+  # validateしてから読んでねてへぺろ
   def register_user(params)
     params["active"] = 1
+    user = User.find_by(line_id: params[:line_id])
 
-    user = User.create(params)
+    user = User.create(params) unless user
   end
 
   def send_invite(user_id, target_id)
