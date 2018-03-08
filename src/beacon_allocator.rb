@@ -42,4 +42,5 @@ class BeaconAcceptor
     message_hash = {"type":"text","text": participants_list}
     $message_helper.push_message(user_id, message_hash)
   end
+
 end
