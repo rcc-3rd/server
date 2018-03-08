@@ -3,13 +3,13 @@
   "baseUrl": "",
   "altText": "場所を教えよう",
   "baseSize": {
-    "height": 1040,
-    "width": 1560
+    "height": 1560,
+    "width": 1040
   },
   "actions": [
     {
       "type": "message",
-      "text": "左上",
+      "text": "バスの左上",
       "area": {
         "x": 0,
         "y": 0,
@@ -19,7 +19,7 @@
     },
     {
       "type": "message",
-      "text": "右上",
+      "text": "バスの右上",
       "area": {
         "x": 520,
         "y": 0,
@@ -29,7 +29,7 @@
     },
     {
       "type": "message",
-      "text": "左中",
+      "text": "バスの左中",
       "area": {
         "x": 0,
         "y": 520,
@@ -39,7 +39,7 @@
     },
     {
       "type": "message",
-      "text": "右中",
+      "text": "バスの右中",
       "area": {
         "x": 520,
         "y": 520,
@@ -49,7 +49,7 @@
     },
     {
       "type": "message",
-      "text": "左下",
+      "text": "バスの左下",
       "area": {
         "x": 0,
         "y": 1040,
@@ -59,7 +59,7 @@
     },
     {
       "type": "message",
-      "text": "右下",
+      "text": "バスの右下",
       "area": {
         "x": 520,
         "y": 1040,

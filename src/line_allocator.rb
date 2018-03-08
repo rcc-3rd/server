@@ -9,6 +9,10 @@ class LineAllocator
   #Redis使う
   def initialize
     @rooms = []
+    @map = {
+      "右上": "right_up", "右中": "right_mid", "右下": "right_down",
+      "左上": "left_up", "左中": "left_mid", "左下": "left_down"
+    }
   end
 
   def allocate_event (user_id, event) 
@@ -18,12 +22,47 @@ class LineAllocator
     partner = room.pairs[user_id] 
     return Error.new("yet paired") unless partner
    
-    msg = {
-      "type": "text",
-      "text": event["message"]["text"] 
-    }
+    text = event["message"]["text"]
 
-    $message_helper.push_message(partner, msg)
+    if(text == "Finish")
+      room.pairs.delete(user_id)
+      room.pairs.delete(partner)
+
+      msg = {
+        "type": "text",
+        "text": "お話タイムは終了です！"
+      }
+
+      $message_helper.push_message(user_id, msg)
+      $message_helper.push_message(partner, msg)
+
+    elsif (text == "Meet" && (event["source"]["userId"]==user_id))
+      hash = $templates.tell_position_imagemap
+      hash["baseUrl"] = "https://bus.hile.work/img/bus_image"
+
+      $message_helper.push_message(user_id, hash)
+    elsif (text.start_with? "バスの")
+      file = "https://bus.hile.work/img/#{@map[text[3..-1].to_sym]}"
+      hash = $templates.image_post.clone
+      hash["originalContentUrl"] = "#{file}_1040.png"
+      hash["previewImageUrl"] = "#{file}_240.png"
+
+      $message_helper.push_message(partner, hash)
+
+      sign = $templates.image_post.clone
+      sign["originalContentUrl"] = "https://bus.hile.work/img/sign1040.jpg"
+      sign["previewImageUrl"] = "https://bus.hile.work/img/sign240.jpg"
+
+      $message_helper.push_message(partner, sign)
+
+    else
+      msg = {
+        "type": "text",
+        "text": text
+      }
+
+      $message_helper.push_message(partner, msg)
+    end
   
     return Success.new("success")
   end
@@ -37,6 +76,9 @@ class LineAllocator
   # ペアリングを設定
   def pairing(user_id, target_id)
     room = find_room_by_user user_id
+    room.pairing(user_id, target_id)
+
+    room = find_room_by_user target_id
     room.pairing(user_id, target_id)
     
     msg = {

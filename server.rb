@@ -70,8 +70,6 @@ class Hoge < Sinatra::Base
       puts params
       res = $line_allocator.allocate_event(event["source"]["userId"], event)
       
-
-
     when "postback" then
       puts "postback get"
 
