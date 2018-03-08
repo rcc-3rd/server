@@ -1,0 +1,37 @@
+version: '2'
+
+services: 
+  bus:
+    container_name: bus
+    image: ruby:2.3
+    expose:
+      - 8080
+    environment:
+      VIRTUAL_HOST: bus.hile.work
+      VIRTUAL_PORT: 8080
+      LETSENCRYPT_HOST: bus.hile.work
+      LETSENCRYPT_EMAIL: illogical.j@gmail.com
+    volumes:
+      - .:/bus
+    networks:
+      - nginxproxy_default
+      - bus_inner
+    restart: always
+    working_dir: /bus
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+
+  mysql:
+    container_name: mysql
+    image: mysql
+    expose:
+      - 3306
+    networks:
+      - bus_inner
+
+networks:
+  bus_inner:
+  nginxproxy_default:
+    external: true
+
