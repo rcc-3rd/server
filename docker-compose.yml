@@ -3,7 +3,8 @@ version: '2'
 services: 
   bus:
     container_name: bus
-    image: ruby:2.3
+    #image: ruby:2.3
+    build: .
     expose:
       - 8080
     environment:
@@ -18,19 +19,20 @@ services:
       - bus_inner
     restart: always
     working_dir: /bus
-    command: /bin/bash
+    entrypoint: /bin/bash
     stdin_open: true
     tty: true
 
-  mysql:
-    container_name: mysql
-    image: mysql
+  postgres:
+    container_name: postgres
+    image: postgres
     expose:
-      - 3306
+      - 5432
     networks:
       - bus_inner
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      POSTGRES_PASSWORD: password
+      #POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=ja_JP.UTF-8"
 
 networks:
   bus_inner:

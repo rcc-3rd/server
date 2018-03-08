@@ -1,7 +1,7 @@
 require 'singleton'
 
 
-class BeaconAcceptor
+class BeaconAllocator
   include Singleton
 
   def allocate_event (json) 

@@ -1,0 +1,18 @@
+<html>
+<body>
+<form method="post" action="/submit">
+ <p>
+ 氏名：<input type="text" name="name" />
+</p>
+
+ <p>
+ prof：<input type="text" name="profile"/>
+</p>
+
+<input type="hidden" name="line_id" value="<%= @line_id %>"/>
+<p>
+ <input type="submit" value="送信" />　
+ </p>
+</form>
+</body>
+</html>
