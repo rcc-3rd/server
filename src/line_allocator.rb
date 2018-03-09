@@ -120,6 +120,9 @@ class LineAllocator
     tmp["title"] = "#{user.name}からのお誘い"
     tmp["text"] = user.profile
     tmp["thumbnailImageUrl"] = "https://bus.hile.work/img/steeve.jpg"
+    if(user.name == "かいき")
+      tmp["thumbnailImageUrl"] = "https://bus.hile.work/img/kaiki.jpg"
+    end
     tmp["actions"][0]["data"] = {
       "type": "matching",
       "user_id": user_id
