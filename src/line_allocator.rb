@@ -28,6 +28,9 @@ class LineAllocator
       room.pairs.delete(user_id)
       room.pairs.delete(partner)
 
+      room.users.delete(user_id)
+      room.users.delete(partner)
+
       msg = {
         "type": "text",
         "text": "お話タイムは終了です！"
