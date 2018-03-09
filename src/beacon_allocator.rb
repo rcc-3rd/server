@@ -37,8 +37,8 @@ class BeaconAllocator
 
   def send_ad(user_id)
     hash = $templates.image_post.clone
-    hash["originalContentUrl"] = "https://bus.hile.work/img/ad_test1040.jpg"
-    hash["previewImageUrl"] = "https://bus.hile.work/img/ad_test240.jpg"
+    hash["originalContentUrl"] = "https://bus.hile.work/img/ad_1040.jpg"
+    hash["previewImageUrl"] = "https://bus.hile.work/img/ad_240.jpg"
 
     $message_helper.push_message(user_id, hash)
   end
