@@ -76,22 +76,29 @@ header h1{
 }
 
 .form_content{
-    padding-top:15px;
-    padding-bottom:25px;
+    padding-top:5px;
+    padding-bottom:15px;
 
 }
 .form_title{
     margin: 5px 0;
-    font-size: 30px;
+    font-size: 28px;
 }
 
 .form_item {
     width: 80%;
-    font-size: 20px;   
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
 }
 
 .form_name{
     width: 200px;
+}
+
+.form_profile{
+
 }
 
 .send_btn{
@@ -110,8 +117,8 @@ header h1{
 }
 
 .send_btn:hover{
-    background-color: #cccccc;
-    color:#000;
+    background-color: rgb(5, 27, 136);
+    color:#ccc;
     transition:0.3s;
 }
 
@@ -124,4 +131,3 @@ footer {
     height: 20px;
     padding-top: 10px;
   }
-  
