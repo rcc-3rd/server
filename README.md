@@ -1,8 +1,8 @@
 # CLEVA
 
-## about
-![CLEVA_logo](https://raw.githubusercontent.com/rcc-3rd/server/cleva_logo.png "ロゴ")
+![CLEVA_logo](https://raw.githubusercontent.com/rcc-3rd/server/images/cleva_logo.png "ロゴ")
 
+## about
 **CLEVA**はRCC_3rdが提供する完全に新しい最高にクールなソリューションです！
 
 
