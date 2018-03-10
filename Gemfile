@@ -13,7 +13,6 @@ gem 'pg'
 gem 'activerecord'
 
 gem 'faraday'
-
 gem 'line-bot-api'
 
 gem 'byebug'
