@@ -3,7 +3,6 @@ version: '2'
 services: 
   bus:
     container_name: bus
-    #image: ruby:2.3
     build: .
     expose:
       - 8080
@@ -32,16 +31,6 @@ services:
       - bus_inner
     environment:
       POSTGRES_PASSWORD: password
-      #POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=ja_JP.UTF-8"
-
-  geth:
-    container_name: geth
-    image: ethereum/client-go
-    expose:
-      - 8545
-    networks:
-      - bus_inner
-
 networks:
   bus_inner:
   nginxproxy_default:
