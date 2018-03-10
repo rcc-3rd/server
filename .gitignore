@@ -1,8 +1,0 @@
-config/cred.yml
-docker-compose.yml
-Gemfile.lock
-
-.byebug_history
-*.swp
-
-!.gitkeep
