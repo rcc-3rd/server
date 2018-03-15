@@ -1,18 +1,14 @@
-require 'json'
 require 'byebug'
 
+require 'json'
 require 'sinatra/base'
 require 'sinatra/reloader' 
-
 require 'line/bot'
 
-require_relative 'src/requests'
 require_relative 'src/db_util'
-
+require_relative 'src/template'
 require_relative 'src/beacon_allocator'
 require_relative 'src/line_allocator'
-require_relative 'src/template'
-require_relative 'src/message_helper'
 
 
 class Hoge < Sinatra::Base
@@ -33,10 +29,8 @@ class Hoge < Sinatra::Base
     profile = params["profile"]
     line_id = params["line_id"]
 
-    req = validate_existance({"name":name, "profile":profile, "line_id": line_id})
-    return req.to_json if req.class==Error
-
-    puts params
+    validate_existance({"name":name, "profile":profile, "line_id": line_id})
+    error 400 do 'field lacking' end unless res
 
     safe_params = {"name": name, "profile": profile, "line_id": line_id}
     $line_allocator.register_user(safe_params)
@@ -48,13 +42,15 @@ class Hoge < Sinatra::Base
 
   # line beacon API
   post '/line' do
-    req = request.body.read
+    body = request.body.read
 
-    params = parse_json req
-    return Error.new("invalid json") unless params
-    return Error.new("require event") unless event=params.dig("events")[0]
+    signature = request.env['HTTP_X_LINE_SIGNATURE']
+    unless $client.validate_signature(body, signature)
+      error 400 do 'Bad Request' end
+    end
 
-    puts event
+    events = $client.parse_events_from(body)
+    error 400 do 'invalid json' end unless events
 
     case event["type"]
     when "follow" then
@@ -63,7 +59,7 @@ class Hoge < Sinatra::Base
 
     when "beacon" then
       puts "beacon fire"
-      res = $beacon_allocator.allocate_event(event)
+      $beacon_allocator.allocate_event(event)
 
     when "message" then
       puts "message fire"
@@ -74,7 +70,7 @@ class Hoge < Sinatra::Base
       puts "postback get"
 
       params = parse_json event["postback"]["data"]
-      return Error.new("invalid json") unless params
+      error 400 do 'invalid postback json' end unless params
 
       puts params
 
@@ -89,12 +85,11 @@ class Hoge < Sinatra::Base
       end
       
     else
-      res = Error.new("invalid type")
-
+      error 400 do 'unsupported postback type' end
     end
 
+    "ok"
 
-    return res.to_json
   end
 
 end
@@ -114,15 +109,15 @@ end
 
 
 # 存在検証
-# Error / nil
-def validate_existance(params)
+# true(ok) / false(err)
+def valide_existance(params)
   params.each do |k, v|
     next if v
 
-    return Error.new("#{k} required")
+    return false
   end
 
-  return nil
+  return true
 end
 
 def setup()
@@ -138,7 +133,6 @@ def setup()
   $line_allocator = LineAllocator.instance
   $beacon_allocator = BeaconAllocator.instance
   $templates = Template.instance
-  $message_helper = MessageHelper.instance
 end
 
 setup()

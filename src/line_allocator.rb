@@ -17,10 +17,10 @@ class LineAllocator
 
   def allocate_event (user_id, event) 
     room = find_room_by_user(user_id)
-    return Error.new("not in room") unless room
+    return false
 
     partner = room.pairs[user_id] 
-    return Error.new("yet paired") unless partner
+    return false
    
     text = event["message"]["text"]
 
@@ -36,27 +36,27 @@ class LineAllocator
         "text": "お話タイムは終了です！"
       }
 
-      $message_helper.push_message(user_id, msg)
-      $message_helper.push_message(partner, msg)
+      $line_client.push_message(user_id, msg)
+      $line_client.push_message(partner, msg)
 
     elsif (text == "Meet" && (event["source"]["userId"]==user_id))
       hash = $templates.tell_position_imagemap
       hash["baseUrl"] = "https://bus.hile.work/img/bus_image"
 
-      $message_helper.push_message(user_id, hash)
+      $line_client.push_message(user_id, hash)
     elsif (text.start_with? "バスの")
       file = "https://bus.hile.work/img/#{@map[text[3..-1].to_sym]}"
       hash = $templates.image_post.clone
       hash["originalContentUrl"] = "#{file}_1040.png"
       hash["previewImageUrl"] = "#{file}_240.png"
 
-      $message_helper.push_message(partner, hash)
+      $line_client.push_message(partner, hash)
 
       sign = $templates.image_post.clone
       sign["originalContentUrl"] = "https://bus.hile.work/img/sign1040.jpg"
       sign["previewImageUrl"] = "https://bus.hile.work/img/sign240.jpg"
 
-      $message_helper.push_message(partner, sign)
+      $line_client.push_message(partner, sign)
 
     else
       msg = {
@@ -64,10 +64,10 @@ class LineAllocator
         "text": text
       }
 
-      $message_helper.push_message(partner, msg)
+      $line_client.push_message(partner, msg)
     end
   
-    return Success.new("success")
+    return true
   end
 
   def find_room_by_user user_id 
@@ -89,10 +89,10 @@ class LineAllocator
       "text": "#{User.find_by(line_id: target_id).name}と話しています"
     }
     
-    $message_helper.push_message(user_id, msg)
+    $line_client.push_message(user_id, msg)
 
     msg["text"] = "#{User.find_by(line_id: user_id).name}と話しています"
-    $message_helper.push_message(target_id, msg)
+    $line_client.push_message(target_id, msg)
 
     return Success.new("pairing done")
   end
@@ -103,7 +103,7 @@ class LineAllocator
     message["text"] += user_id
     puts message.to_json
 
-    res = $message_helper.push_message(user_id, message)
+    res = $line_client.push_message(user_id, message)
   end
 
   # validateしてから読んでねてへぺろ
@@ -131,7 +131,7 @@ class LineAllocator
       "user_id": user_id
     }.to_json
 
-    $message_helper.push_message target_id, hash
+    $line_client.push_message target_id, hash
 
   end
 

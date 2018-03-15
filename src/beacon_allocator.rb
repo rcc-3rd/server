@@ -17,7 +17,7 @@ class BeaconAllocator
 
     unless user
       puts "unknown user"
-      return Error.new("unknown user") 
+      return false
     end
 
     send_ad(user_id)
@@ -33,6 +33,8 @@ class BeaconAllocator
       #participants_list = [user_id]
       #send_participants_list(user_id, participants_list)
     end
+
+    return true
   end
 
   def send_ad(user_id)
@@ -40,7 +42,7 @@ class BeaconAllocator
     hash["originalContentUrl"] = "https://bus.hile.work/img/ad_1040.jpg"
     hash["previewImageUrl"] = "https://bus.hile.work/img/ad_240.jpg"
 
-    $message_helper.push_message(user_id, hash)
+    $line_client.push_message(user_id, hash)
   end
 
   def create_room(room_id,user_id)
@@ -73,7 +75,7 @@ class BeaconAllocator
         "user_id": user.line_id
       }.to_json
 
-      $message_helper.push_message(user_id, hash)
+      $line_client.push_message(user_id, hash)
     end
 
   end
