@@ -14,10 +14,12 @@ ActiveRecord::Base.establish_connection(
 class InitialSchema < ActiveRecord::Migration[5.1]
   def self.up
     create_table :users do |t|
-      t.string :line_id
-      t.string :name
-      t.string :profile
-      t.integer :active
+      t.string :line_id,  null: false
+      t.string :name,     null: false
+      t.string :profile,  null: false
+      t.boolean :active,  null: false, default: false
+
+      t.timestamps
     end
     add_index :users, [:line_id], :unique => true
   end

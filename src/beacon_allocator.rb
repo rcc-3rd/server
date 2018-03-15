@@ -6,12 +6,9 @@ class BeaconAllocator
   include Singleton
 
   def allocate_event (event) 
-
-    #user_idにuserをセット
-    user_id = event["source"]["userId"]
-
-    #beabom_idをroom_idとする
-    room_id = event["beacon"]["hwid"]
+    user_id = event['source']['userId']
+    #beacon_idをroom_idとする
+    room_id = event['beacon']['hwid']
 
     user = User.find_by(line_id: user_id)
 
@@ -29,18 +26,15 @@ class BeaconAllocator
     else
       #roomが存在しない場合
       create_room(room_id, user_id)
-      #join_room(room_id, user_id)
-      #participants_list = [user_id]
-      #send_participants_list(user_id, participants_list)
     end
 
     return true
   end
 
   def send_ad(user_id)
-    hash = $templates.image_post.clone
-    hash["originalContentUrl"] = "https://bus.hile.work/img/ad_1040.jpg"
-    hash["previewImageUrl"] = "https://bus.hile.work/img/ad_240.jpg"
+    hash = $templates.image_post
+    hash['originalContentUrl'] = "https://bus.hile.work/img/ad_1040.jpg"
+    hash['previewImageUrl'] = "https://bus.hile.work/img/ad_240.jpg"
 
     $line_client.push_message(user_id, hash)
   end
@@ -64,13 +58,13 @@ class BeaconAllocator
     participants_list.each do |user| 
       user = User.find_by(line_id: user)
 
-      hash = $templates.beacon_enter_user.clone
-      hash["template"]["thumbnailImageUrl"] = "https://bus.hile.work/img/steeve.jpg"
-      hash["template"]["title"] = user.name
-      hash["template"]["text"] = user.profile
-      hash["template"]["actions"][0]["displayText"] = "#{user.name}と話す"
+      hash = $templates.beacon_enter_user
+      hash['template']['thumbnailImageUrl'] = "https://bus.hile.work/img/steeve.jpg"
+      hash['template']['title'] = user.name
+      hash['template']['text'] = user.profile
+      hash['template']['actions'][0]['displayText'] = "#{user.name}と話す"
  
-      hash["template"]["actions"][0]["data"] = {
+      hash['template']['actions'][0]['data'] = {
         "type": "invite",
         "user_id": user.line_id
       }.to_json
