@@ -12,10 +12,15 @@ class Template
         json = JSON.load(io)
       end
       hash = json.to_hash
+      
       val = f[10...-5]
-
       instance_variable_set("@#{val}", hash)
-      self.class.class_eval("attr_accessor :#{val}")
+
+      # 同名の関数でcloneを返すように
+      self.class.send(:define_method, val) do
+        # 深いコピーの為に文字列にバラす(FileIOよりまし・・・)
+        eval("Marshal.load(Marshal.dump(@#{val}))")
+      end
     end
   end
 
